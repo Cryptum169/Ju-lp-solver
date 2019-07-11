@@ -59,9 +59,11 @@ export simplex
         counter += 1
         min_idx = argmin(tableau[1, 1:end-1])
 
-        result = Array{Tuple{Float64, Int64}, 1};
+        # result = Array{Tuple{Float64, Int64}, 1};
         # result = Array{1};
         # result = Array{Any, 1};
+        result = Tuple{Float64, Int64}[]
+        @show result
         for (idx, items) in enumerate(tableau[2:end, min_idx])
             if items == 0
                 continue
@@ -72,12 +74,12 @@ export simplex
             end
 
             temp = (values, idx);
-            append!(result, temp);
+            push!(result, (temp));
         end
 
+        data = sort(result, by = x -> x[2]);
         @show result
-        # data = sort(result, by = x -> x[2]);
-        # @show data
+        @show data
         return;
 
     end
