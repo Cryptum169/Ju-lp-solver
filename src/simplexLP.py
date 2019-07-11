@@ -112,10 +112,4 @@ b_ub = np.array([1,5,1])
 # Sign of constraints
 sign = np.array([-1,1,-1])
 
-import time
-a = time.time()
-for b in range(100):
-    simplex(c, A_ub, b_ub, sign)
-print(time.time() - a)
-
-# cProfile.run('simplex(c, A_ub, b_ub, sign)')
+cProfile.run('simplex(c, A_ub, b_ub, sign)')
