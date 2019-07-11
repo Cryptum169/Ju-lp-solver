@@ -1,1 +1,3 @@
-1 + 1
+using Test
+using LPSolver
+@test true

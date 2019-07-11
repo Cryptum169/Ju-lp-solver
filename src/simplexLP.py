@@ -1,6 +1,3 @@
-import timeit
-import re
-import cProfile
 import numpy as np
 from scipy.optimize import linprog
 
@@ -96,20 +93,3 @@ def simplex(objFunc, mat_c, cons_A, sign):
             result.append(tableau[item_idx[0],-1][0])
     
     return result
-
-# C as function for maximization
-c = np.array([3,5,-6])
-
-# A as constraint arithmetic
-A_ub = np.array([
-    [4,0,10],
-    [1,2,7],
-    [0,1,1]])
-
-# B as constraint boundary
-b_ub = np.array([1,5,1])
-
-# Sign of constraints
-sign = np.array([-1,1,-1])
-
-cProfile.run('simplex(c, A_ub, b_ub, sign)')
