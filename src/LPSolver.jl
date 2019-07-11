@@ -86,7 +86,7 @@ export simplex
         end
     end
 
-    return result;
+    result
 end
 
 end
