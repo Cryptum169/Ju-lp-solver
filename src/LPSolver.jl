@@ -1,6 +1,8 @@
 module LPSolver
+
 using LinearAlgebra
 
+export simplex
 @inbounds function simplex(objFunc::Array, A::Array, B::Array, sign::Array)
     num_obj_var = size(objFunc, 2)
     # println(num_obj_var)
@@ -21,17 +23,17 @@ using LinearAlgebra
     big_M_matrix = zeros(num_of_constraint, num_bigM);
 
     # println(big_M_matrix);
-    
+
     if big_M
         for (idx, value) in enumerate(arg_where)
             # println("idx=$idx, val=$(value[2])");
             big_M_matrix[value[2], idx] = 1
         end
     end
-    
+
     constraint_vec = zeros(1, num_of_constraint);
     objFunc = hcat(objFunc, constraint_vec, big_M_vector', 0);
-    
+
     slack_var_matrix = Matrix{Float64}(I, num_of_constraint, num_of_constraint)
     # @show slack_var_matrix
     for value in arg_where
@@ -52,7 +54,7 @@ using LinearAlgebra
 
     iter_limit = 100;
     counter = 0;
-    
+
     while !all(tableau[1,:].>0) && (counter < iter_limit)
         counter += 1
         min_idx = argmin(tableau[1, 1:end-1])
