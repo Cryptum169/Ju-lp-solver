@@ -16,7 +16,7 @@ println("------------------- a detailed profiling -----------------")
 (@benchmark simplex(obj_func, constraint_arithmetic, constraint_boundary, sign)) |> display
 println()
 
-println("------------------- do 10000 random trials after compilation-----------------")
+println("------------------- do 10000 random trials after compilation (total time) -----------------")
 
 while true
     size = rand(3:20)
@@ -34,9 +34,9 @@ while true
         
     end
 
-    length(obj_funcs) == 1000 && break
+    length(obj_funcs) == 10000 && break
 end
 
-@time for i in 1:1000
+@time for i in 1:10000
     simplex(obj_funcs[i], constraint_arithmetics[i], constraint_boundarys[i], signs[i])
 end
