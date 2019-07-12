@@ -11,12 +11,12 @@ export simplex
     big_M = num_bigM != 0;
     arg_where = nothing
     big_M_matrix = zeros(num_of_constraint, num_bigM);
+    big_M_value = maximum(abs.(B)) * 1000;
+    big_M_vector = ones(num_bigM, 1) .* big_M_value;
 
 
     if big_M
         arg_where = findall(x -> x < 0, sign)
-        big_M_value = maximum(abs.(B)) * 1000;
-        big_M_vector = ones(num_bigM, 1) .* big_M_value;
         for (idx, value) in enumerate(arg_where)
             big_M_matrix[value[2], idx] = 1
         end
