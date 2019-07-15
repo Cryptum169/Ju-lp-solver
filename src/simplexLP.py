@@ -1,8 +1,8 @@
 import numpy as np
 from scipy.optimize import linprog
 
-np.set_printoptions(suppress=True,edgeitems=10)
-np.core.arrayprint._line_width = 2000
+np.set_printoptions(suppress=True,edgeitems=8, linewidth=100)
+# np.core.arrayprint._line_width = 20000
 
 def simplex(objFunc, mat_c, cons_A, sign):
     num_actual_var = objFunc.shape[0]
@@ -39,8 +39,9 @@ def simplex(objFunc, mat_c, cons_A, sign):
         np.zeros(1).reshape(1,1)), axis = 1)
 
     slack_variable_matrix = np.identity(num_of_constraint)
-    for k in arg_where:
-        slack_variable_matrix[k[0]][k[0]] = -1
+    if arg_where is not None:
+        for k in arg_where:
+            slack_variable_matrix[k[0]][k[0]] = -1
 
     tableau = np.concatenate((mat_c, slack_variable_matrix, big_M_matrix,
     cons_A.T.reshape(num_of_constraint,1)), axis = 1)
@@ -48,7 +49,7 @@ def simplex(objFunc, mat_c, cons_A, sign):
     # Tableau Form Done
     tableau = np.concatenate((objFunc, tableau), axis = 0)
 
-    if big_M:
+    if big_M and arg_where is not None:
         for value in arg_where:
             tableau[0][:] = tableau[0][:] - big_M_value * tableau[value + 1][:]
 
@@ -85,11 +86,18 @@ def simplex(objFunc, mat_c, cons_A, sign):
     # print("Completed in {} iterations".format(counter))
 
     result = []
+    # print(tableau)
     for k in range(num_actual_var):
+        # print(k)
         if tableau[0][k] != 0:
             result.append(0)
+            # print("stuff")
         else:
-            item_idx = np.where(tableau[1:][k] == 1)
-            result.append(tableau[item_idx[0],-1][0])
+            # print(tableau[:, k])
+            item_idx = np.where(tableau[:,k] == 1)
+            # print(tableau[1:][k])
+            # print(item_idx)
+            # print("{} item_idx is {}".format(k, item_idx))
+            result.append(tableau[item_idx[0], -1][0])
     
     return result
