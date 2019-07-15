@@ -17,7 +17,6 @@ println("------------------- a detailed profiling -----------------")
 println()
 
 println("------------------- do 10000 random trials after compilation (total time) -----------------")
-
 while true
     size = rand(3:20)
     o = rand(-10:10, (1, size))
