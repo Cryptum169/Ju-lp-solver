@@ -3,9 +3,9 @@ module LPSolver
 using LinearAlgebra
 
 export simplex
-@inbounds function simplex(objFunc::Array, A::Array, B::Array, sign::Array)
+@inbounds function simplex_with_bigM(objFunc::Array, A::Array, B::Array, sign::Array)
     num_obj_var = size(objFunc, 2)
-    num_of_constraint = size(A, 2); # -> index from 1
+    num_of_constraint = size(A, 1); # -> index from 1
 
     num_bigM = sum(sign .- 1) ÷ -2;
     big_M = num_bigM != 0;
@@ -24,17 +24,21 @@ export simplex
 
     constraint_vec = zeros(1, num_of_constraint);
     objFunc = hcat(objFunc, constraint_vec, big_M_vector', 0);
-
     slack_var_matrix = Matrix{Float64}(I, num_of_constraint, num_of_constraint)
-    for value in arg_where
-        slack_var_matrix[value[2], value[2]] = -1;
+
+    if arg_where != nothing
+        for value in arg_where
+            slack_var_matrix[value[2], value[2]] = -1;
+        end
     end
 
     tableau = vcat(objFunc, hcat(A, slack_var_matrix, big_M_matrix, B'));
 
     if big_M
-        for value in arg_where
-            tableau[1,:] -= big_M_value .* tableau[value[2] + 1, :]
+        if arg_where != nothing
+            for value in arg_where
+                tableau[1,:] -= big_M_value .* tableau[value[2] + 1, :]
+            end
         end
     end
 
@@ -76,6 +80,15 @@ export simplex
     end
 
     result
+end
+
+function simplex(objFunc::Array, A::Array, B::Array)
+    sign = ones(Int64, size(B))
+    sign[B .< 0] .= -1
+    B = abs.(B);
+    A = A .* sign'
+
+    simplex_with_bigM(objFunc, A, B, sign)
 end
 
 end
